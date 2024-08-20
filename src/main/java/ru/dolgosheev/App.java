@@ -61,10 +61,10 @@ public class App {
             Date departureDate = dateFormat.parse(ticket.getDepartureDate());
             Date arrivalDate = dateFormat.parse(ticket.getArrivalDate());
 
-            long mSecInDay = 86400000;
             long diff = arrivalTime.getTime() - departureTime.getTime();
             if (arrivalDate.after(departureDate)) {
-                diff += mSecInDay;
+                long diffDays = arrivalDate.getTime() - departureDate.getTime();
+                diff += diffDays;
             } else if (departureDate.after(arrivalDate)) {
                 System.out.println("\nНеверно указана дата отправления / прилета билета:\n" + ticket.toString() + "\n");
                 continue;

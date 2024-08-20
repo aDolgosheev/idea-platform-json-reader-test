@@ -68,6 +68,11 @@ public class App {
             } else if (departureDate.after(arrivalDate)) {
                 System.out.println("\nНеверно указана дата отправления / прилета билета:\n" + ticket.toString() + "\n");
                 continue;
+            } else if (departureDate.equals(arrivalDate)) {
+                if (departureTime.after(arrivalDate)) {
+                    System.out.println("\nНеверно указано время отправления / прилета билета:\n" + ticket.toString() + "\n");
+                    continue;
+                }
             }
             if (diff < minTime) {
                 minTime = diff;

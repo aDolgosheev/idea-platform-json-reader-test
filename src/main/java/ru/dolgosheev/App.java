@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -19,7 +20,7 @@ public class App {
         String fileName = "tickets.json";
         ObjectMapper mapper = new ObjectMapper();
 
-        //Парсинг файла и последующая сортировка билетов по городам отправления (Владивосток) / назначения (Тель-Авив)
+        //Парсинг файла и последующая сортировка билетов по городам отправления (Владивосток) - назначения (Тель-Авив)
         TicketsList ticketsList = mapper.readValue(new File(fileName), new TypeReference<>() {
         });
         List<Ticket> ticketsFromVVOToTLV = ticketsList.getTickets()
@@ -47,6 +48,7 @@ public class App {
     //метод для расчета минимального времени полета
     public static void minTime(List<Ticket> ticketsList, String carrier) throws ParseException {
         SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
         long minTime = 1000000000;
 
         List<Ticket> filtredTicketsList = ticketsList.stream()
@@ -56,7 +58,17 @@ public class App {
         for (Ticket ticket : filtredTicketsList) {
             Date departureTime = dateTimeFormatter.parse(ticket.getDepartureTime());
             Date arrivalTime = dateTimeFormatter.parse(ticket.getArrivalTime());
+            Date departureDate = dateFormat.parse(ticket.getDepartureDate());
+            Date arrivalDate = dateFormat.parse(ticket.getArrivalDate());
+
+            long mSecInDay = 86400000;
             long diff = arrivalTime.getTime() - departureTime.getTime();
+            if (arrivalDate.after(departureDate)) {
+                diff += mSecInDay;
+            } else if (departureDate.after(arrivalDate)) {
+                System.out.println("\nНеверно указана дата отправления / прилета билета:\n" + ticket.toString() + "\n");
+                continue;
+            }
             if (diff < minTime) {
                 minTime = diff;
             }

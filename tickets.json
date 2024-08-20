@@ -11,7 +11,7 @@
     "carrier": "TK",
     "stops": 3,
     "price": 12400
-  }, {
+  },  {
     "origin": "VVO",
     "origin_name": "Владивосток",
     "destination": "TLV",
